@@ -1,0 +1,210 @@
+#include<iostream>
+using namespace std;
+
+class Building
+{
+	int height;
+	double area;
+	char* address;
+public:
+	Building(int = 0, double = 0.0, char* = "");
+	~Building();
+	Building(const Building&);
+	Building& operator = (const Building&);
+	int getHeight() {return height;}
+	double getArea() {return area;}
+	char* getAddress() {return address;}
+	void setHeight(int);
+	void setArea(double);
+	void setAddress(char*);
+	void read();
+	void print();
+	
+};
+
+#include<iostream>
+#include<cstring>
+using namespace std;
+
+#include "Building.h"
+
+Building::Building(int h, double a, char* ad)
+{
+	height = h;
+	area = a;
+	address = new char[strlen(ad)+1];
+	strcpy(address, ad);
+}
+
+Building::~Building()
+{
+	delete[] address;
+}
+
+Building::Building(const Building& o)
+{
+	height = o.height;
+	area = o.area;
+	address = new char[strlen(o.address)+1];
+	strcpy(address, o.address);
+}
+
+Building& Building::operator=(const Building& o)
+{
+	if (this!=&o)
+	{
+		delete[] address;
+		height = o.height;
+		area = o.area;
+		address = new char[strlen(o.address)+1];
+		strcpy(address, o.address);
+	}
+	return *this;
+}
+
+void Building::setHeight(int h)
+{
+	height = h;
+}
+
+void Building::setArea(double a)
+{
+	area = a;
+}
+
+void Building::setAddress(char* ad)
+{
+	address = new char[strlen(ad)+1];
+	strcpy(address, ad);
+}
+
+void Building::print()
+{
+	cout<<"Height: "<<height<<endl;
+	cout<<"Area: "<<area<<endl;
+	cout<<"Address: "<<address<<endl;
+}
+
+void Building::read()
+{
+	cout<<"Enter height: ";
+	cin>>height;
+	cout<<"Enter area: ";
+	cin>>area;
+	cout<<"Enter address: ";
+	cin.getline(address,100);
+}
+
+#include "Building.h"
+
+class House : public Building
+{
+	int floors;
+	char* name;
+public:
+	House(int = 0, double = 0.0, char* = "", int = 0, char* = "");
+	~House();
+	House(const House&);
+	House& operator= (const House&);
+	int getFloors() {return floors;}
+	char* getName() {return name;}
+	void setFloors(int f) {floors = f;}
+	void setName(char*);
+	void read();
+	void print();
+	double maxSpace() {return getHeight()/getFloors();}
+	House& max(House arr[100]);
+};
+
+#include<iostream>
+#include<cstring>
+using namespace std;
+
+#include "house.h"
+
+House::House(int h, double a, char* ad, int f, char* n) : Building(h,a,ad)
+{
+	floors = f;
+	name = new char[strlen(n)+1];
+	strcpy(name,n);
+}
+
+House::~House()
+{
+	delete [] name;
+}
+
+House::House(const House & o) : Building(o)
+{
+	floors = o.floors;
+	name = new char[strlen(o.name)+1];
+	strcpy(name, o.name);
+}
+
+House& House::operator=(const House & o)
+{
+	if (this!=&o)
+	{
+		Building::operator=(o);
+		delete[] name;
+		floors = o.floors;
+		name = new char[strlen(o.name)+1];
+		strcpy(name, o.name);
+	}
+	return *this;
+}
+
+void House::setName(char* n)
+{
+	name = new char[strlen(n)+1];
+	strcpy(name, n);
+}
+
+void House::read()
+{
+	Building::read();
+	cout<<"Enter floors: ";
+	cin>>floors;
+	cout<<"Enter name: ";
+	cin.getline(name,100);
+}
+
+void House::print()
+{
+	Building::print();
+	cout<<"Floors: "<<floors<<endl;
+	cout<<"Name: "<<name<<endl;
+}
+
+House& House::max(House arr[100])
+{
+	int n;
+	cout<<"Enter houses: ";
+	cin>>n;
+	double m = arr[0].maxSpace();
+	for (int i = 0;i<n;i++)
+	{
+		if(arr[i].maxSpace()>m)
+		{
+			m = arr[i].maxSpace();
+		}
+	}
+	for (int i = 0;i<n;i++)
+	{
+		if (arr[i].maxSpace()==m)
+			return arr[i];
+	}
+}
+
+#include "house.h"
+
+int main()
+{
+	Building b1;
+	b1.read();
+	b1.print();
+	House h;
+	h.read();
+	h.print();
+	return 0;
+}
